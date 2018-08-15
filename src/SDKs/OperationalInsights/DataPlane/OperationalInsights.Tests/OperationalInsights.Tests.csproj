@@ -6,9 +6,9 @@
     <AssemblyName>Microsoft.Azure.OperationalInsights.Tests</AssemblyName>
     <VersionPrefix>1.0.0-preview</VersionPrefix>
   </PropertyGroup>
-  <PropertyGroup>
+  <!--<PropertyGroup>
     <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
-  </PropertyGroup>
+  </PropertyGroup>-->
   <ItemGroup>
     <None Update="SessionRecords\**\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -16,7 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Azure.Management.ResourceManager" Version="[1.6.0-preview, 2.0.0)" />
-    <ProjectReference Include="..\OperationalInsights\OperationalInsights.csproj" />
+    <ProjectReference Include="..\OperationalInsights\Microsoft.Azure.OperationalInsights.csproj" />
     <!-- Enable below line in local to work around the bug that cannot find test cases -->
     <!--<PackageReference Update="Microsoft.NET.Test.Sdk" Version="15.3.0" />-->
   </ItemGroup>

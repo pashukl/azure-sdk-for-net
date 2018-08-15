@@ -16,12 +16,12 @@
 namespace Management.HDInsight.Tests
 {
     using Xunit;
+    using Microsoft.Azure.Management.HDInsight;
     using Microsoft.Azure.Management.HDInsight.Models;
-    using Microsoft.HDInsight.Models;
-    using Microsoft.HDInsight;
     using System.Linq;
     using System;
 
+    [Collection("ScenarioTests")]
     public class ResizeTests
     {
         [Fact]
@@ -30,7 +30,7 @@ namespace Management.HDInsight.Tests
             string clusterName = "hdisdk-clusterresize";
             string testName = "TestResizeCluster";
             string suiteName = GetType().FullName;
-            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas();
+            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas(testName);
 
             HDInsightManagementTestUtilities.CreateClusterInNewResourceGroupAndRunTest(suiteName, testName, clusterName, createParams, (client, rgName) =>
             {

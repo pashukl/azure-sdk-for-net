@@ -8,7 +8,7 @@
 // regenerated.
 // </auto-generated>
 
-namespace Microsoft.HDInsight
+namespace Microsoft.Azure.Management.HDInsight
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Azure;
@@ -81,9 +81,9 @@ namespace Microsoft.HDInsight
         IApplicationsOperations Applications { get; }
 
         /// <summary>
-        /// Gets the ILocationOperations.
+        /// Gets the ILocationsOperations.
         /// </summary>
-        ILocationOperations Location { get; }
+        ILocationsOperations Locations { get; }
 
         /// <summary>
         /// Gets the IConfigurationsOperations.

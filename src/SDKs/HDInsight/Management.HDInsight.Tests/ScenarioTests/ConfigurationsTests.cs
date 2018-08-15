@@ -16,13 +16,12 @@
 namespace Management.HDInsight.Tests
 {
     using Xunit;
-    using Microsoft.HDInsight.Models;
-    using Microsoft.HDInsight;
+    using Microsoft.Azure.Management.HDInsight;
     using Microsoft.Azure.Management.HDInsight.Models;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using System.Linq;
 
+    [Collection("ScenarioTests")]
     public class ConfigurationsTests
     {
         [Fact]
@@ -31,7 +30,7 @@ namespace Management.HDInsight.Tests
             string clusterName = "hdisdk-configs";
             string testName = "TestGetConfigurations";
             string suiteName = GetType().FullName;
-            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas();
+            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas(testName);
 
             Dictionary<string, string> hiveConfig = new Dictionary<string, string>
             {
@@ -73,7 +72,7 @@ namespace Management.HDInsight.Tests
                 Assert.True(core.ContainsKey(Constants.StorageConfigurations.DefaultFsKey));
                 string storageKeyFormat = Constants.StorageConfigurations.WasbStorageAccountKeyFormat;
                 string storageKeyPrefix = storageKeyFormat.Substring(0, storageKeyFormat.IndexOf("{"));
-                Assert.True(core.Any(c => c.Key.StartsWith(storageKeyPrefix)));
+                Assert.Contains(core, c => c.Key.StartsWith(storageKeyPrefix));
             });
         }
     }

@@ -6,7 +6,7 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-namespace Microsoft.HDInsight
+namespace Microsoft.Azure.Management.HDInsight
 {
     using Microsoft.Rest;
     using Microsoft.Rest.Azure;
@@ -47,7 +47,7 @@ namespace Microsoft.HDInsight
             try
             {
                 HttpConnectivitySettings settings = GetEnableParameters(username, password);
-                return await UpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, settings, null, cancellationToken);
+                return await UpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, ConfigurationKey.Gateway, ConfigurationsConverter.Convert(settings), null, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -82,7 +82,7 @@ namespace Microsoft.HDInsight
             try
             {
                 HttpConnectivitySettings settings = GetEnableParameters(username, password);
-                return await BeginUpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, settings, null, cancellationToken);
+                return await BeginUpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, ConfigurationKey.Gateway, ConfigurationsConverter.Convert(settings), null, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -110,7 +110,7 @@ namespace Microsoft.HDInsight
             try
             {
                 var settings = GetDisableParameters();
-                return await UpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, settings, null, cancellationToken);
+                return await UpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, ConfigurationKey.Gateway, ConfigurationsConverter.Convert(settings), null, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -138,7 +138,7 @@ namespace Microsoft.HDInsight
             try
             {
                 var settings = GetDisableParameters();
-                return await BeginUpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, settings, null, cancellationToken);
+                return await BeginUpdateHTTPSettingsWithHttpMessagesAsync(resourceGroupName, clusterName, ConfigurationKey.Gateway, ConfigurationsConverter.Convert(settings), null, cancellationToken);
             }
             catch (Exception ex)
             {

@@ -11,68 +11,103 @@
 namespace Microsoft.Azure.Management.Compute.Models
 {
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using System.Runtime;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines values for DiskCreateOption.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum DiskCreateOption
+    /// <summary>
+    /// Determine base value for a given allowed value if exists, else return
+    /// the value itself
+    /// </summary>
+    [JsonConverter(typeof(DiskCreateOptionConverter))]
+    public struct DiskCreateOption : System.IEquatable<DiskCreateOption>
     {
-        [EnumMember(Value = "Empty")]
-        Empty,
-        [EnumMember(Value = "Attach")]
-        Attach,
-        [EnumMember(Value = "FromImage")]
-        FromImage,
-        [EnumMember(Value = "Import")]
-        Import,
-        [EnumMember(Value = "Copy")]
-        Copy
-    }
-    internal static class DiskCreateOptionEnumExtension
-    {
-        internal static string ToSerializedValue(this DiskCreateOption? value)
+        private DiskCreateOption(string underlyingValue)
         {
-            return value == null ? null : ((DiskCreateOption)value).ToSerializedValue();
+            UnderlyingValue=underlyingValue;
         }
 
-        internal static string ToSerializedValue(this DiskCreateOption value)
+        public static readonly DiskCreateOption Empty = "Empty";
+
+        public static readonly DiskCreateOption Attach = "Attach";
+
+        public static readonly DiskCreateOption FromImage = "FromImage";
+
+        public static readonly DiskCreateOption Import = "Import";
+
+        public static readonly DiskCreateOption Copy = "Copy";
+
+        public static readonly DiskCreateOption Restore = "Restore";
+
+
+        /// <summary>
+        /// Underlying value of enum DiskCreateOption
+        /// </summary>
+        private readonly string UnderlyingValue;
+
+        /// <summary>
+        /// Returns string representation for DiskCreateOption
+        /// </summary>
+        public override string ToString()
         {
-            switch( value )
-            {
-                case DiskCreateOption.Empty:
-                    return "Empty";
-                case DiskCreateOption.Attach:
-                    return "Attach";
-                case DiskCreateOption.FromImage:
-                    return "FromImage";
-                case DiskCreateOption.Import:
-                    return "Import";
-                case DiskCreateOption.Copy:
-                    return "Copy";
-            }
-            return null;
+            return UnderlyingValue.ToString();
         }
 
-        internal static DiskCreateOption? ParseDiskCreateOption(this string value)
+        /// <summary>
+        /// Compares enums of type DiskCreateOption
+        /// </summary>
+        public bool Equals(DiskCreateOption e)
         {
-            switch( value )
-            {
-                case "Empty":
-                    return DiskCreateOption.Empty;
-                case "Attach":
-                    return DiskCreateOption.Attach;
-                case "FromImage":
-                    return DiskCreateOption.FromImage;
-                case "Import":
-                    return DiskCreateOption.Import;
-                case "Copy":
-                    return DiskCreateOption.Copy;
-            }
-            return null;
+            return UnderlyingValue.Equals(e.UnderlyingValue);
         }
+
+        /// <summary>
+        /// Implicit operator to convert string to DiskCreateOption
+        /// </summary>
+        public static implicit operator DiskCreateOption(string value)
+        {
+            return new DiskCreateOption(value);
+        }
+
+        /// <summary>
+        /// Implicit operator to convert DiskCreateOption to string
+        /// </summary>
+        public static implicit operator string(DiskCreateOption e)
+        {
+            return e.UnderlyingValue;
+        }
+
+        /// <summary>
+        /// Overriding == operator for enum DiskCreateOption
+        /// </summary>
+        public static bool operator == (DiskCreateOption e1, DiskCreateOption e2)
+        {
+            return e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overriding != operator for enum DiskCreateOption
+        /// </summary>
+        public static bool operator != (DiskCreateOption e1, DiskCreateOption e2)
+        {
+            return !e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overrides Equals operator for DiskCreateOption
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return obj is DiskCreateOption && Equals((DiskCreateOption)obj);
+        }
+
+        /// <summary>
+        /// Returns for hashCode DiskCreateOption
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return UnderlyingValue.GetHashCode();
+        }
+
     }
 }

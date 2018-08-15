@@ -73,6 +73,11 @@ namespace Microsoft.Azure.Management.Network
         public bool? GenerateClientRequestId { get; set; }
 
         /// <summary>
+        /// Gets the IAzureFirewallsOperations.
+        /// </summary>
+        public virtual IAzureFirewallsOperations AzureFirewalls { get; private set; }
+
+        /// <summary>
         /// Gets the IApplicationGatewaysOperations.
         /// </summary>
         public virtual IApplicationGatewaysOperations ApplicationGateways { get; private set; }
@@ -81,6 +86,11 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the IApplicationSecurityGroupsOperations.
         /// </summary>
         public virtual IApplicationSecurityGroupsOperations ApplicationSecurityGroups { get; private set; }
+
+        /// <summary>
+        /// Gets the IDdosProtectionPlansOperations.
+        /// </summary>
+        public virtual IDdosProtectionPlansOperations DdosProtectionPlans { get; private set; }
 
         /// <summary>
         /// Gets the IAvailableEndpointServicesOperations.
@@ -98,6 +108,11 @@ namespace Microsoft.Azure.Management.Network
         public virtual IExpressRouteCircuitPeeringsOperations ExpressRouteCircuitPeerings { get; private set; }
 
         /// <summary>
+        /// Gets the IExpressRouteCircuitConnectionsOperations.
+        /// </summary>
+        public virtual IExpressRouteCircuitConnectionsOperations ExpressRouteCircuitConnections { get; private set; }
+
+        /// <summary>
         /// Gets the IExpressRouteCircuitsOperations.
         /// </summary>
         public virtual IExpressRouteCircuitsOperations ExpressRouteCircuits { get; private set; }
@@ -106,6 +121,16 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the IExpressRouteServiceProvidersOperations.
         /// </summary>
         public virtual IExpressRouteServiceProvidersOperations ExpressRouteServiceProviders { get; private set; }
+
+        /// <summary>
+        /// Gets the IExpressRouteCrossConnectionsOperations.
+        /// </summary>
+        public virtual IExpressRouteCrossConnectionsOperations ExpressRouteCrossConnections { get; private set; }
+
+        /// <summary>
+        /// Gets the IExpressRouteCrossConnectionPeeringsOperations.
+        /// </summary>
+        public virtual IExpressRouteCrossConnectionPeeringsOperations ExpressRouteCrossConnectionPeerings { get; private set; }
 
         /// <summary>
         /// Gets the ILoadBalancersOperations.
@@ -183,6 +208,11 @@ namespace Microsoft.Azure.Management.Network
         public virtual IPacketCapturesOperations PacketCaptures { get; private set; }
 
         /// <summary>
+        /// Gets the IConnectionMonitorsOperations.
+        /// </summary>
+        public virtual IConnectionMonitorsOperations ConnectionMonitors { get; private set; }
+
+        /// <summary>
         /// Gets the IOperations.
         /// </summary>
         public virtual IOperations Operations { get; private set; }
@@ -251,6 +281,41 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the ILocalNetworkGatewaysOperations.
         /// </summary>
         public virtual ILocalNetworkGatewaysOperations LocalNetworkGateways { get; private set; }
+
+        /// <summary>
+        /// Gets the IVirtualWANsOperations.
+        /// </summary>
+        public virtual IVirtualWANsOperations VirtualWANs { get; private set; }
+
+        /// <summary>
+        /// Gets the IVpnSitesOperations.
+        /// </summary>
+        public virtual IVpnSitesOperations VpnSites { get; private set; }
+
+        /// <summary>
+        /// Gets the IVpnSitesConfigurationOperations.
+        /// </summary>
+        public virtual IVpnSitesConfigurationOperations VpnSitesConfiguration { get; private set; }
+
+        /// <summary>
+        /// Gets the IVirtualHubsOperations.
+        /// </summary>
+        public virtual IVirtualHubsOperations VirtualHubs { get; private set; }
+
+        /// <summary>
+        /// Gets the IHubVirtualNetworkConnectionsOperations.
+        /// </summary>
+        public virtual IHubVirtualNetworkConnectionsOperations HubVirtualNetworkConnections { get; private set; }
+
+        /// <summary>
+        /// Gets the IVpnGatewaysOperations.
+        /// </summary>
+        public virtual IVpnGatewaysOperations VpnGateways { get; private set; }
+
+        /// <summary>
+        /// Gets the IVpnConnectionsOperations.
+        /// </summary>
+        public virtual IVpnConnectionsOperations VpnConnections { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the NetworkManagementClient class.
@@ -453,13 +518,18 @@ namespace Microsoft.Azure.Management.Network
         /// </summary>
         private void Initialize()
         {
+            AzureFirewalls = new AzureFirewallsOperations(this);
             ApplicationGateways = new ApplicationGatewaysOperations(this);
             ApplicationSecurityGroups = new ApplicationSecurityGroupsOperations(this);
+            DdosProtectionPlans = new DdosProtectionPlansOperations(this);
             AvailableEndpointServices = new AvailableEndpointServicesOperations(this);
             ExpressRouteCircuitAuthorizations = new ExpressRouteCircuitAuthorizationsOperations(this);
             ExpressRouteCircuitPeerings = new ExpressRouteCircuitPeeringsOperations(this);
+            ExpressRouteCircuitConnections = new ExpressRouteCircuitConnectionsOperations(this);
             ExpressRouteCircuits = new ExpressRouteCircuitsOperations(this);
             ExpressRouteServiceProviders = new ExpressRouteServiceProvidersOperations(this);
+            ExpressRouteCrossConnections = new ExpressRouteCrossConnectionsOperations(this);
+            ExpressRouteCrossConnectionPeerings = new ExpressRouteCrossConnectionPeeringsOperations(this);
             LoadBalancers = new LoadBalancersOperations(this);
             LoadBalancerBackendAddressPools = new LoadBalancerBackendAddressPoolsOperations(this);
             LoadBalancerFrontendIPConfigurations = new LoadBalancerFrontendIPConfigurationsOperations(this);
@@ -475,6 +545,7 @@ namespace Microsoft.Azure.Management.Network
             DefaultSecurityRules = new DefaultSecurityRulesOperations(this);
             NetworkWatchers = new NetworkWatchersOperations(this);
             PacketCaptures = new PacketCapturesOperations(this);
+            ConnectionMonitors = new ConnectionMonitorsOperations(this);
             Operations = new Operations(this);
             PublicIPAddresses = new PublicIPAddressesOperations(this);
             RouteFilters = new RouteFiltersOperations(this);
@@ -489,6 +560,13 @@ namespace Microsoft.Azure.Management.Network
             VirtualNetworkGateways = new VirtualNetworkGatewaysOperations(this);
             VirtualNetworkGatewayConnections = new VirtualNetworkGatewayConnectionsOperations(this);
             LocalNetworkGateways = new LocalNetworkGatewaysOperations(this);
+            VirtualWANs = new VirtualWANsOperations(this);
+            VpnSites = new VpnSitesOperations(this);
+            VpnSitesConfiguration = new VpnSitesConfigurationOperations(this);
+            VirtualHubs = new VirtualHubsOperations(this);
+            HubVirtualNetworkConnections = new HubVirtualNetworkConnectionsOperations(this);
+            VpnGateways = new VpnGatewaysOperations(this);
+            VpnConnections = new VpnConnectionsOperations(this);
             BaseUri = new System.Uri("https://management.azure.com");
             AcceptLanguage = "en-US";
             LongRunningOperationRetryTimeout = 30;
@@ -569,7 +647,7 @@ namespace Microsoft.Azure.Management.Network
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "this.SubscriptionId");
             }
-            string apiVersion = "2017-10-01";
+            string apiVersion = "2018-06-01";
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
             string _invocationId = null;

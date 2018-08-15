@@ -33,13 +33,16 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// </summary>
         /// <param name="additionalProperties">Unmatched properties from the
         /// message are deserialized this collection</param>
+        /// <param name="dataFactoryName">The data factory name which the
+        /// integration runtime belong to.</param>
         /// <param name="state">The state of integration runtime. Possible
         /// values include: 'Initial', 'Stopped', 'Started', 'Starting',
-        /// 'Stopping', 'NeedRegistration', 'Online', 'Limited',
-        /// 'Offline'</param>
-        public IntegrationRuntimeStatus(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), string state = default(string))
+        /// 'Stopping', 'NeedRegistration', 'Online', 'Limited', 'Offline',
+        /// 'AccessDenied'</param>
+        public IntegrationRuntimeStatus(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), string dataFactoryName = default(string), string state = default(string))
         {
             AdditionalProperties = additionalProperties;
+            DataFactoryName = dataFactoryName;
             State = state;
             CustomInit();
         }
@@ -57,9 +60,15 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         public IDictionary<string, object> AdditionalProperties { get; set; }
 
         /// <summary>
+        /// Gets the data factory name which the integration runtime belong to.
+        /// </summary>
+        [JsonProperty(PropertyName = "dataFactoryName")]
+        public string DataFactoryName { get; private set; }
+
+        /// <summary>
         /// Gets the state of integration runtime. Possible values include:
         /// 'Initial', 'Stopped', 'Started', 'Starting', 'Stopping',
-        /// 'NeedRegistration', 'Online', 'Limited', 'Offline'
+        /// 'NeedRegistration', 'Online', 'Limited', 'Offline', 'AccessDenied'
         /// </summary>
         [JsonProperty(PropertyName = "state")]
         public string State { get; private set; }

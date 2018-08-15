@@ -11,50 +11,95 @@
 namespace Microsoft.Azure.Management.Compute.Models
 {
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using System.Runtime;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines values for AccessLevel.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum AccessLevel
+    /// <summary>
+    /// Determine base value for a given allowed value if exists, else return
+    /// the value itself
+    /// </summary>
+    [JsonConverter(typeof(AccessLevelConverter))]
+    public struct AccessLevel : System.IEquatable<AccessLevel>
     {
-        [EnumMember(Value = "None")]
-        None,
-        [EnumMember(Value = "Read")]
-        Read
-    }
-    internal static class AccessLevelEnumExtension
-    {
-        internal static string ToSerializedValue(this AccessLevel? value)
+        private AccessLevel(string underlyingValue)
         {
-            return value == null ? null : ((AccessLevel)value).ToSerializedValue();
+            UnderlyingValue=underlyingValue;
         }
 
-        internal static string ToSerializedValue(this AccessLevel value)
+        public static readonly AccessLevel None = "None";
+
+        public static readonly AccessLevel Read = "Read";
+
+
+        /// <summary>
+        /// Underlying value of enum AccessLevel
+        /// </summary>
+        private readonly string UnderlyingValue;
+
+        /// <summary>
+        /// Returns string representation for AccessLevel
+        /// </summary>
+        public override string ToString()
         {
-            switch( value )
-            {
-                case AccessLevel.None:
-                    return "None";
-                case AccessLevel.Read:
-                    return "Read";
-            }
-            return null;
+            return UnderlyingValue.ToString();
         }
 
-        internal static AccessLevel? ParseAccessLevel(this string value)
+        /// <summary>
+        /// Compares enums of type AccessLevel
+        /// </summary>
+        public bool Equals(AccessLevel e)
         {
-            switch( value )
-            {
-                case "None":
-                    return AccessLevel.None;
-                case "Read":
-                    return AccessLevel.Read;
-            }
-            return null;
+            return UnderlyingValue.Equals(e.UnderlyingValue);
         }
+
+        /// <summary>
+        /// Implicit operator to convert string to AccessLevel
+        /// </summary>
+        public static implicit operator AccessLevel(string value)
+        {
+            return new AccessLevel(value);
+        }
+
+        /// <summary>
+        /// Implicit operator to convert AccessLevel to string
+        /// </summary>
+        public static implicit operator string(AccessLevel e)
+        {
+            return e.UnderlyingValue;
+        }
+
+        /// <summary>
+        /// Overriding == operator for enum AccessLevel
+        /// </summary>
+        public static bool operator == (AccessLevel e1, AccessLevel e2)
+        {
+            return e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overriding != operator for enum AccessLevel
+        /// </summary>
+        public static bool operator != (AccessLevel e1, AccessLevel e2)
+        {
+            return !e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overrides Equals operator for AccessLevel
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return obj is AccessLevel && Equals((AccessLevel)obj);
+        }
+
+        /// <summary>
+        /// Returns for hashCode AccessLevel
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return UnderlyingValue.GetHashCode();
+        }
+
     }
 }

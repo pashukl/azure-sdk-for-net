@@ -70,6 +70,11 @@ namespace Microsoft.Azure.Management.Network
 
 
         /// <summary>
+        /// Gets the IAzureFirewallsOperations.
+        /// </summary>
+        IAzureFirewallsOperations AzureFirewalls { get; }
+
+        /// <summary>
         /// Gets the IApplicationGatewaysOperations.
         /// </summary>
         IApplicationGatewaysOperations ApplicationGateways { get; }
@@ -78,6 +83,11 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the IApplicationSecurityGroupsOperations.
         /// </summary>
         IApplicationSecurityGroupsOperations ApplicationSecurityGroups { get; }
+
+        /// <summary>
+        /// Gets the IDdosProtectionPlansOperations.
+        /// </summary>
+        IDdosProtectionPlansOperations DdosProtectionPlans { get; }
 
         /// <summary>
         /// Gets the IAvailableEndpointServicesOperations.
@@ -95,6 +105,11 @@ namespace Microsoft.Azure.Management.Network
         IExpressRouteCircuitPeeringsOperations ExpressRouteCircuitPeerings { get; }
 
         /// <summary>
+        /// Gets the IExpressRouteCircuitConnectionsOperations.
+        /// </summary>
+        IExpressRouteCircuitConnectionsOperations ExpressRouteCircuitConnections { get; }
+
+        /// <summary>
         /// Gets the IExpressRouteCircuitsOperations.
         /// </summary>
         IExpressRouteCircuitsOperations ExpressRouteCircuits { get; }
@@ -103,6 +118,16 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the IExpressRouteServiceProvidersOperations.
         /// </summary>
         IExpressRouteServiceProvidersOperations ExpressRouteServiceProviders { get; }
+
+        /// <summary>
+        /// Gets the IExpressRouteCrossConnectionsOperations.
+        /// </summary>
+        IExpressRouteCrossConnectionsOperations ExpressRouteCrossConnections { get; }
+
+        /// <summary>
+        /// Gets the IExpressRouteCrossConnectionPeeringsOperations.
+        /// </summary>
+        IExpressRouteCrossConnectionPeeringsOperations ExpressRouteCrossConnectionPeerings { get; }
 
         /// <summary>
         /// Gets the ILoadBalancersOperations.
@@ -180,6 +205,11 @@ namespace Microsoft.Azure.Management.Network
         IPacketCapturesOperations PacketCaptures { get; }
 
         /// <summary>
+        /// Gets the IConnectionMonitorsOperations.
+        /// </summary>
+        IConnectionMonitorsOperations ConnectionMonitors { get; }
+
+        /// <summary>
         /// Gets the IOperations.
         /// </summary>
         IOperations Operations { get; }
@@ -248,6 +278,41 @@ namespace Microsoft.Azure.Management.Network
         /// Gets the ILocalNetworkGatewaysOperations.
         /// </summary>
         ILocalNetworkGatewaysOperations LocalNetworkGateways { get; }
+
+        /// <summary>
+        /// Gets the IVirtualWANsOperations.
+        /// </summary>
+        IVirtualWANsOperations VirtualWANs { get; }
+
+        /// <summary>
+        /// Gets the IVpnSitesOperations.
+        /// </summary>
+        IVpnSitesOperations VpnSites { get; }
+
+        /// <summary>
+        /// Gets the IVpnSitesConfigurationOperations.
+        /// </summary>
+        IVpnSitesConfigurationOperations VpnSitesConfiguration { get; }
+
+        /// <summary>
+        /// Gets the IVirtualHubsOperations.
+        /// </summary>
+        IVirtualHubsOperations VirtualHubs { get; }
+
+        /// <summary>
+        /// Gets the IHubVirtualNetworkConnectionsOperations.
+        /// </summary>
+        IHubVirtualNetworkConnectionsOperations HubVirtualNetworkConnections { get; }
+
+        /// <summary>
+        /// Gets the IVpnGatewaysOperations.
+        /// </summary>
+        IVpnGatewaysOperations VpnGateways { get; }
+
+        /// <summary>
+        /// Gets the IVpnConnectionsOperations.
+        /// </summary>
+        IVpnConnectionsOperations VpnConnections { get; }
 
         /// <summary>
         /// Checks whether a domain name in the cloudapp.azure.com zone is

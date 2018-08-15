@@ -39,10 +39,12 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// </summary>
         /// <param name="additionalProperties">Unmatched properties from the
         /// message are deserialized this collection</param>
+        /// <param name="dataFactoryName">The data factory name which the
+        /// integration runtime belong to.</param>
         /// <param name="state">The state of integration runtime. Possible
         /// values include: 'Initial', 'Stopped', 'Started', 'Starting',
-        /// 'Stopping', 'NeedRegistration', 'Online', 'Limited',
-        /// 'Offline'</param>
+        /// 'Stopping', 'NeedRegistration', 'Online', 'Limited', 'Offline',
+        /// 'AccessDenied'</param>
         /// <param name="createTime">The time at which the integration runtime
         /// was created, in ISO8601 format.</param>
         /// <param name="nodes">The list of nodes for managed integration
@@ -51,8 +53,8 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// integration runtime.</param>
         /// <param name="lastOperation">The last operation result that occurred
         /// on this integration runtime.</param>
-        public ManagedIntegrationRuntimeStatus(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), string state = default(string), System.DateTime? createTime = default(System.DateTime?), IList<ManagedIntegrationRuntimeNode> nodes = default(IList<ManagedIntegrationRuntimeNode>), IList<ManagedIntegrationRuntimeError> otherErrors = default(IList<ManagedIntegrationRuntimeError>), ManagedIntegrationRuntimeOperationResult lastOperation = default(ManagedIntegrationRuntimeOperationResult))
-            : base(additionalProperties, state)
+        public ManagedIntegrationRuntimeStatus(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), string dataFactoryName = default(string), string state = default(string), System.DateTime? createTime = default(System.DateTime?), IList<ManagedIntegrationRuntimeNode> nodes = default(IList<ManagedIntegrationRuntimeNode>), IList<ManagedIntegrationRuntimeError> otherErrors = default(IList<ManagedIntegrationRuntimeError>), ManagedIntegrationRuntimeOperationResult lastOperation = default(ManagedIntegrationRuntimeOperationResult))
+            : base(additionalProperties, dataFactoryName, state)
         {
             CreateTime = createTime;
             Nodes = nodes;

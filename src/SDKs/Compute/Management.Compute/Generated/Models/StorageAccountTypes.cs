@@ -11,50 +11,97 @@
 namespace Microsoft.Azure.Management.Compute.Models
 {
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using System.Runtime;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines values for StorageAccountTypes.
     /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum StorageAccountTypes
+    /// <summary>
+    /// Determine base value for a given allowed value if exists, else return
+    /// the value itself
+    /// </summary>
+    [JsonConverter(typeof(StorageAccountTypesConverter))]
+    public struct StorageAccountTypes : System.IEquatable<StorageAccountTypes>
     {
-        [EnumMember(Value = "Standard_LRS")]
-        StandardLRS,
-        [EnumMember(Value = "Premium_LRS")]
-        PremiumLRS
-    }
-    internal static class StorageAccountTypesEnumExtension
-    {
-        internal static string ToSerializedValue(this StorageAccountTypes? value)
+        private StorageAccountTypes(string underlyingValue)
         {
-            return value == null ? null : ((StorageAccountTypes)value).ToSerializedValue();
+            UnderlyingValue=underlyingValue;
         }
 
-        internal static string ToSerializedValue(this StorageAccountTypes value)
+        public static readonly StorageAccountTypes StandardLRS = "Standard_LRS";
+
+        public static readonly StorageAccountTypes PremiumLRS = "Premium_LRS";
+
+        public static readonly StorageAccountTypes StandardSSDLRS = "StandardSSD_LRS";
+
+
+        /// <summary>
+        /// Underlying value of enum StorageAccountTypes
+        /// </summary>
+        private readonly string UnderlyingValue;
+
+        /// <summary>
+        /// Returns string representation for StorageAccountTypes
+        /// </summary>
+        public override string ToString()
         {
-            switch( value )
-            {
-                case StorageAccountTypes.StandardLRS:
-                    return "Standard_LRS";
-                case StorageAccountTypes.PremiumLRS:
-                    return "Premium_LRS";
-            }
-            return null;
+            return UnderlyingValue.ToString();
         }
 
-        internal static StorageAccountTypes? ParseStorageAccountTypes(this string value)
+        /// <summary>
+        /// Compares enums of type StorageAccountTypes
+        /// </summary>
+        public bool Equals(StorageAccountTypes e)
         {
-            switch( value )
-            {
-                case "Standard_LRS":
-                    return StorageAccountTypes.StandardLRS;
-                case "Premium_LRS":
-                    return StorageAccountTypes.PremiumLRS;
-            }
-            return null;
+            return UnderlyingValue.Equals(e.UnderlyingValue);
         }
+
+        /// <summary>
+        /// Implicit operator to convert string to StorageAccountTypes
+        /// </summary>
+        public static implicit operator StorageAccountTypes(string value)
+        {
+            return new StorageAccountTypes(value);
+        }
+
+        /// <summary>
+        /// Implicit operator to convert StorageAccountTypes to string
+        /// </summary>
+        public static implicit operator string(StorageAccountTypes e)
+        {
+            return e.UnderlyingValue;
+        }
+
+        /// <summary>
+        /// Overriding == operator for enum StorageAccountTypes
+        /// </summary>
+        public static bool operator == (StorageAccountTypes e1, StorageAccountTypes e2)
+        {
+            return e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overriding != operator for enum StorageAccountTypes
+        /// </summary>
+        public static bool operator != (StorageAccountTypes e1, StorageAccountTypes e2)
+        {
+            return !e2.Equals(e1);
+        }
+
+        /// <summary>
+        /// Overrides Equals operator for StorageAccountTypes
+        /// </summary>
+        public override bool Equals(object obj)
+        {
+            return obj is StorageAccountTypes && Equals((StorageAccountTypes)obj);
+        }
+
+        /// <summary>
+        /// Returns for hashCode StorageAccountTypes
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return UnderlyingValue.GetHashCode();
+        }
+
     }
 }

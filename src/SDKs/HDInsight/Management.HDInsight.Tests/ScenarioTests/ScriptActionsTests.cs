@@ -16,10 +16,9 @@
 namespace Management.HDInsight.Tests
 {
     using Xunit;
+    using Microsoft.Azure.Management.HDInsight;
     using Microsoft.Azure.Management.HDInsight.Models;
-    using Microsoft.HDInsight.Models;
     using System.Collections.Generic;
-    using Microsoft.HDInsight;
     using Microsoft.WindowsAzure.Storage.Auth;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -28,6 +27,7 @@ namespace Management.HDInsight.Tests
     using Microsoft.Rest.Azure;
     using System.Linq;
 
+    [Collection("ScenarioTests")]
     public class ScriptActionsTests
     {
         private const string InstallGiraph = "https://hdiconfigactions.blob.core.windows.net/linuxgiraphconfigactionv01/giraph-installer-v01.sh";
@@ -40,7 +40,7 @@ namespace Management.HDInsight.Tests
             string clusterName = "hdisdk-scriptactions";
             string testName = "TestScriptActionsOnRunningCluster";
             string suiteName = GetType().FullName;
-            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas();
+            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas(testName);
 
             HDInsightManagementTestUtilities.CreateClusterInNewResourceGroupAndRunTest(suiteName, testName, clusterName, createParams, (client, rgName) =>
             {
@@ -98,7 +98,7 @@ namespace Management.HDInsight.Tests
                 Assert.Equal("Succeeded", scriptAction.Status);
 
                 //Promote non-persisted script.
-                client.ScriptExecutionHistory.Promote(rgName, clusterName, listHistoryResponse.First().ScriptExecutionId.Value);
+                client.ScriptExecutionHistory.Promote(rgName, clusterName, listHistoryResponse.First().ScriptExecutionId.Value.ToString());
 
                 //Execute failing script action.
                 string failingScriptUri = GetFailingScriptUri(createParams);

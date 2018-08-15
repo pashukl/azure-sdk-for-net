@@ -54,7 +54,15 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// [Azure Hybrid Use Benefit for Windows
         /// Server](https://docs.microsoft.com/azure/virtual-machines/virtual-machines-windows-hybrid-use-benefit-licensing?toc=%2fazure%2fvirtual-machines%2fwindows%2ftoc.json)
         /// &lt;br&gt;&lt;br&gt; Minimum api-version: 2015-06-15</param>
-        public VirtualMachineScaleSetVMProfile(VirtualMachineScaleSetOSProfile osProfile = default(VirtualMachineScaleSetOSProfile), VirtualMachineScaleSetStorageProfile storageProfile = default(VirtualMachineScaleSetStorageProfile), VirtualMachineScaleSetNetworkProfile networkProfile = default(VirtualMachineScaleSetNetworkProfile), DiagnosticsProfile diagnosticsProfile = default(DiagnosticsProfile), VirtualMachineScaleSetExtensionProfile extensionProfile = default(VirtualMachineScaleSetExtensionProfile), string licenseType = default(string))
+        /// <param name="priority">Specifies the priority for the virtual
+        /// machines in the scale set. &lt;br&gt;&lt;br&gt;Minimum api-version:
+        /// 2017-10-30-preview. Possible values include: 'Regular',
+        /// 'Low'</param>
+        /// <param name="evictionPolicy">Specifies the eviction policy for
+        /// virtual machines in a low priority scale set.
+        /// &lt;br&gt;&lt;br&gt;Minimum api-version: 2017-10-30-preview.
+        /// Possible values include: 'Deallocate', 'Delete'</param>
+        public VirtualMachineScaleSetVMProfile(VirtualMachineScaleSetOSProfile osProfile = default(VirtualMachineScaleSetOSProfile), VirtualMachineScaleSetStorageProfile storageProfile = default(VirtualMachineScaleSetStorageProfile), VirtualMachineScaleSetNetworkProfile networkProfile = default(VirtualMachineScaleSetNetworkProfile), DiagnosticsProfile diagnosticsProfile = default(DiagnosticsProfile), VirtualMachineScaleSetExtensionProfile extensionProfile = default(VirtualMachineScaleSetExtensionProfile), string licenseType = default(string), VirtualMachinePriorityTypes? priority = default(VirtualMachinePriorityTypes?), VirtualMachineEvictionPolicyTypes? evictionPolicy = default(VirtualMachineEvictionPolicyTypes?))
         {
             OsProfile = osProfile;
             StorageProfile = storageProfile;
@@ -62,6 +70,8 @@ namespace Microsoft.Azure.Management.Compute.Models
             DiagnosticsProfile = diagnosticsProfile;
             ExtensionProfile = extensionProfile;
             LicenseType = licenseType;
+            Priority = priority;
+            EvictionPolicy = evictionPolicy;
             CustomInit();
         }
 
@@ -123,6 +133,23 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// </summary>
         [JsonProperty(PropertyName = "licenseType")]
         public string LicenseType { get; set; }
+
+        /// <summary>
+        /// Gets or sets specifies the priority for the virtual machines in the
+        /// scale set. &amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Minimum api-version:
+        /// 2017-10-30-preview. Possible values include: 'Regular', 'Low'
+        /// </summary>
+        [JsonProperty(PropertyName = "priority")]
+        public VirtualMachinePriorityTypes? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets specifies the eviction policy for virtual machines in
+        /// a low priority scale set.
+        /// &amp;lt;br&amp;gt;&amp;lt;br&amp;gt;Minimum api-version:
+        /// 2017-10-30-preview. Possible values include: 'Deallocate', 'Delete'
+        /// </summary>
+        [JsonProperty(PropertyName = "evictionPolicy")]
+        public VirtualMachineEvictionPolicyTypes? EvictionPolicy { get; set; }
 
         /// <summary>
         /// Validate the object.

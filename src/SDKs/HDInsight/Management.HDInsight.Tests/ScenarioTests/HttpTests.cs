@@ -15,32 +15,29 @@
 
 namespace Management.HDInsight.Tests
 {
+    using Microsoft.Azure.Management.HDInsight;
     using Microsoft.Azure.Management.HDInsight.Models;
-    using Microsoft.HDInsight;
-    using Microsoft.HDInsight.Models;
     using Microsoft.Rest.Azure;
     using Newtonsoft.Json;
     using System.Collections.Generic;
     using Xunit;
 
+    [Collection("ScenarioTests")]
     public class HttpTests
     {
         [Fact]
-        public void TestDisableEnableDisableHttpCustom()
+        public void TestHttpCustom()
         {
             string clusterName = "hdisdk-httpcustom";
             string testName = "CanDisableEnableDisableHttpCustom";
             string suiteName = GetType().FullName;
-            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas();
+            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas(testName);
 
             HDInsightManagementTestUtilities.CreateClusterInNewResourceGroupAndRunTest(suiteName, testName,clusterName, createParams, (client, rgName) =>
             {
                 IDictionary<string, string> httpSettings = client.Configurations.Get(rgName, clusterName, ConfigurationKey.Gateway);
                 ValidateHttpSettings(httpSettings, createParams.UserName, createParams.Password);
-
-                CloudException ex = Assert.Throws<CloudException>(() => client.Configurations.DisableHttp(rgName, clusterName));
-                Assert.Equal("Linux clusters do not support revoking HTTP credentials.", ex.Message);
-
+                
                 string newPassword = "NewPassword1!";
                 client.Configurations.EnableHttp(rgName, clusterName, "admin", newPassword);
                 httpSettings = client.Configurations.Get(rgName, clusterName, ConfigurationKey.Gateway);
@@ -49,30 +46,26 @@ namespace Management.HDInsight.Tests
         }
 
         [Fact]
-        public void TestDisableEnableDisableHttpExtended()
+        public void TestHttpExtended()
         {
             string clusterName = "hdisdk-http";
             string testName = "CanDisableEnableDisableHttpExtended";
             string suiteName = GetType().FullName;
-            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas();
+            ClusterCreateParameters createParams = ClusterCreateParametersHelpers.GetCustomCreateParametersIaas(testName);
 
             HDInsightManagementTestUtilities.CreateClusterInNewResourceGroupAndRunTest(suiteName, testName, clusterName, createParams, (client, rgName) =>
             {
                 var httpSettings = client.Configurations.Get(rgName, clusterName, ConfigurationKey.Gateway);
                 ValidateHttpSettings(httpSettings, createParams.UserName, createParams.Password);
-
-                CloudException ex = Assert.Throws<CloudException>(() => client.Configurations.UpdateHTTPSettings(rgName, clusterName,
-                    new HttpConnectivitySettings { EnabledCredential = "false" }));
-                Assert.Equal("Linux clusters do not support revoking HTTP credentials.", ex.Message);
-
+                
                 string newPassword = "NewPassword1!";
-                client.Configurations.UpdateHTTPSettings(rgName, clusterName,
-                    new HttpConnectivitySettings
+                client.Configurations.UpdateHTTPSettings(rgName, clusterName, ConfigurationKey.Gateway,
+                    ConfigurationsConverter.Convert(new HttpConnectivitySettings
                     {
                         EnabledCredential = "true",
                         Username = "admin",
                         Password = newPassword
-                    });
+                    }));
                 httpSettings = client.Configurations.Get(rgName, clusterName, ConfigurationKey.Gateway);
                 ValidateHttpSettings(httpSettings, createParams.UserName, newPassword);
             });

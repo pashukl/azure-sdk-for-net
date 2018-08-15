@@ -10,6 +10,22 @@ namespace Compute.Tests
 {
     public class VMScaleSetVMTestsBase : VMScaleSetTestsBase
     {
+        protected void ValidateVMScaleSetVM(VirtualMachineScaleSet vmScaleSet, string instanceId, VirtualMachineScaleSetVM vmScaleSetVMOut, bool hasManagedDisks = false)
+        {
+            VirtualMachineScaleSetVM vmScaleSetVMModel = GenerateVMScaleSetVMModel(vmScaleSet, instanceId, hasManagedDisks);
+
+            ValidateVMScaleSetVM(vmScaleSetVMModel, vmScaleSet.Sku.Name, vmScaleSetVMOut, hasManagedDisks);
+
+            // Validate Zones.
+            // The zone of the VM should be one of zones specified in the scaleset.
+            if (vmScaleSet.Zones != null)
+            {
+                Assert.NotNull(vmScaleSetVMOut.Zones);
+                Assert.Equal(1, vmScaleSetVMOut.Zones.Count);
+                Assert.True(vmScaleSet.Zones.Any(vmssZone => vmssZone == vmScaleSetVMOut.Zones.First()));
+            }
+        }
+
         protected void ValidateVMScaleSetVM(VirtualMachineScaleSetVM vmScaleSetVM, string skuName, VirtualMachineScaleSetVM vmScaleSetVMOut, bool hasManagedDisks = false)
         {
             Assert.True(!string.IsNullOrEmpty(vmScaleSetVMOut.ProvisioningState));
@@ -73,7 +89,11 @@ namespace Compute.Tests
         protected void ValidateVMScaleSetVMInstanceView(VirtualMachineScaleSetVMInstanceView vmScaleSetVMInstanceView, bool hasManagedDisks = false)
         {
             Assert.NotNull(vmScaleSetVMInstanceView);
+#if NET46
+            Assert.True(vmScaleSetVMInstanceView.Statuses.Any(s => !string.IsNullOrEmpty(s.Code)));
+#else
             Assert.Contains(vmScaleSetVMInstanceView.Statuses, s => !string.IsNullOrEmpty(s.Code));
+#endif
 
             if (!hasManagedDisks)
             {

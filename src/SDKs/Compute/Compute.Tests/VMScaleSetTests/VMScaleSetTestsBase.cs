@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Azure.Management.Compute;
 using Microsoft.Azure.Management.Compute.Models;
 using Microsoft.Azure.Management.Network;
@@ -11,10 +15,6 @@ using Microsoft.Azure.Management.Storage;
 using Microsoft.Azure.Management.Storage.Models;
 using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Xunit;
 using CM = Microsoft.Azure.Management.Compute.Models;
 
@@ -36,6 +36,22 @@ namespace Compute.Tests
             };
 
             return vmExtension;
+        }
+
+        protected VirtualMachineScaleSetExtension GetVmssServiceFabricExtension()
+        {
+            VirtualMachineScaleSetExtension sfExtension = new VirtualMachineScaleSetExtension
+            {
+                Name = "vmsssfext01",
+                Publisher = "Microsoft.Azure.ServiceFabric",
+                Type = "ServiceFabricNode",
+                TypeHandlerVersion = "1.0",
+                AutoUpgradeMinorVersion = true,
+                Settings = "{}",
+                ProtectedSettings = "{}"
+            };
+
+            return sfExtension;
         }
 
         protected VirtualMachineScaleSetExtension GetAzureDiskEncryptionExtension()
@@ -85,12 +101,14 @@ namespace Compute.Tests
             bool hasManagedDisks = false,
             string healthProbeId = null,
             string loadBalancerBackendPoolId = null,
-            IList<string> zones = null)
+            IList<string> zones = null,
+            int? osDiskSizeInGB = null)
         {
             // Generate Container name to hold disk VHds
             string containerName = TestUtilities.GenerateName(TestPrefix);
             var vhdContainer = "https://" + storageAccountName + ".blob.core.windows.net/" + containerName;
             var vmssName = TestUtilities.GenerateName("vmss");
+            bool createOSDisk = !hasManagedDisks || osDiskSizeInGB != null;
 
             return new VirtualMachineScaleSet()
             {
@@ -112,12 +130,13 @@ namespace Compute.Tests
                     StorageProfile = new VirtualMachineScaleSetStorageProfile()
                     {
                         ImageReference = imageRef,
-                        OsDisk = hasManagedDisks ? null : new VirtualMachineScaleSetOSDisk
+                        OsDisk = !createOSDisk ? null : new VirtualMachineScaleSetOSDisk
                         {
                             Caching = CachingTypes.None,
                             CreateOption = DiskCreateOptionTypes.FromImage,
-                            Name = "test",
-                            VhdContainers = new List<string>{ vhdContainer }
+                            Name = hasManagedDisks ? null : "test",
+                            VhdContainers = hasManagedDisks ? null : new List<string>{ vhdContainer },
+                            DiskSizeGB = osDiskSizeInGB
                         },
                         DataDisks = !hasManagedDisks ? null : new List<VirtualMachineScaleSetDataDisk>
                         {
@@ -184,7 +203,8 @@ namespace Compute.Tests
             bool createWithManagedDisks = false,
             bool createWithHealthProbe = false,
             Subnet subnet = null,
-            IList<string> zones = null)
+            IList<string> zones = null,
+            int? osDiskSizeInGB = null)
         {
             try
             {
@@ -199,7 +219,8 @@ namespace Compute.Tests
                                                                                      createWithManagedDisks,
                                                                                      createWithHealthProbe,
                                                                                      subnet,
-                                                                                     zones);
+                                                                                     zones,
+                                                                                     osDiskSizeInGB);
 
                 var getResponse = m_CrpClient.VirtualMachineScaleSets.Get(rgName, vmssName);
 
@@ -273,7 +294,8 @@ namespace Compute.Tests
             bool createWithManagedDisks = false,
             bool createWithHealthProbe = false,
             Subnet subnet = null,
-            IList<string> zones = null)
+            IList<string> zones = null,
+            int? osDiskSizeInGB = null)
         {
             // Create the resource Group, it might have been already created during StorageAccount creation.
             var resourceGroup = m_ResourcesClient.ResourceGroups.CreateOrUpdate(
@@ -297,7 +319,7 @@ namespace Compute.Tests
 
             inputVMScaleSet = CreateDefaultVMScaleSetInput(rgName, storageAccount.Name, imageRef, subnetResponse.Id, hasManagedDisks:createWithManagedDisks,
                 healthProbeId: loadBalancer?.Probes?.FirstOrDefault()?.Id,
-                loadBalancerBackendPoolId: loadBalancer?.BackendAddressPools?.FirstOrDefault()?.Id, zones: zones);
+                loadBalancerBackendPoolId: loadBalancer?.BackendAddressPools?.FirstOrDefault()?.Id, zones: zones, osDiskSizeInGB: osDiskSizeInGB);
             if (vmScaleSetCustomizer != null)
             {
                 vmScaleSetCustomizer(inputVMScaleSet);
@@ -337,6 +359,12 @@ namespace Compute.Tests
                      == vmScaleSet.Sku.Name);
 
             Assert.NotNull(vmScaleSetOut.VirtualMachineProfile.StorageProfile.OsDisk);
+
+            if (vmScaleSet.VirtualMachineProfile.StorageProfile.OsDisk?.DiskSizeGB != null)
+            {
+                Assert.NotNull(vmScaleSetOut.VirtualMachineProfile.StorageProfile.OsDisk.DiskSizeGB);
+                Assert.Equal(vmScaleSet.VirtualMachineProfile.StorageProfile.OsDisk.DiskSizeGB, vmScaleSetOut.VirtualMachineProfile.StorageProfile.OsDisk.DiskSizeGB);
+            }
 
             if (!hasManagedDisks)
             {
@@ -429,6 +457,12 @@ namespace Compute.Tests
                 }
             }
 
+            if(vmScaleSet.UpgradePolicy.AutoOSUpgradePolicy!=null)
+            {
+                Assert.True(vmScaleSetOut.UpgradePolicy.AutoOSUpgradePolicy.DisableAutoRollback == 
+                    vmScaleSet.UpgradePolicy.AutoOSUpgradePolicy.DisableAutoRollback);
+            }
+
             if (vmScaleSet.VirtualMachineProfile.OsProfile.Secrets != null &&
                vmScaleSet.VirtualMachineProfile.OsProfile.Secrets.Any())
             {
@@ -481,6 +515,41 @@ namespace Compute.Tests
             else
             {
                 Assert.True((vmScaleSetOut.VirtualMachineProfile.NetworkProfile == null) || (vmScaleSetOut.VirtualMachineProfile.NetworkProfile.NetworkInterfaceConfigurations.Count == 0));
+            }
+
+            if(vmScaleSet.Zones != null)
+            {
+                Assert.True(vmScaleSet.Zones.SequenceEqual(vmScaleSetOut.Zones), "Zones don't match");
+                if(vmScaleSet.ZoneBalance.HasValue)
+                {
+                    Assert.Equal(vmScaleSet.ZoneBalance, vmScaleSetOut.ZoneBalance);
+                }
+                else
+                {
+                    if (vmScaleSet.Zones.Count > 1)
+                    {
+                        Assert.True(vmScaleSetOut.ZoneBalance.HasValue);
+                    }
+                    else
+                    {
+                        Assert.False(vmScaleSetOut.ZoneBalance.HasValue);
+                    }    
+                }
+
+                if (vmScaleSet.PlatformFaultDomainCount.HasValue)
+                {
+                    Assert.Equal(vmScaleSet.PlatformFaultDomainCount, vmScaleSetOut.PlatformFaultDomainCount);
+                }
+                else
+                {
+                    Assert.True(vmScaleSetOut.PlatformFaultDomainCount.HasValue);
+                }
+            }
+            else
+            {
+                Assert.Null(vmScaleSetOut.Zones);
+                Assert.Null(vmScaleSetOut.ZoneBalance);
+                Assert.Null(vmScaleSetOut.PlatformFaultDomainCount);
             }
         }
 
